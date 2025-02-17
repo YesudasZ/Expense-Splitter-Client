@@ -30,19 +30,18 @@ export interface Transaction {
   amount: number;
 }
 
-// User API
+
 export const createUser = async (name: string): Promise<User> => {
   const response = await axios.post(`${API_URL}/user/create`, { name });
   return response.data;
 };
 
-// Group API
 export const createGroup = async (name: string, members: string[]): Promise<Group> => {
   const response = await axios.post(`${API_URL}/groups`, { name, members });
   return response.data;
 };
 
-// Expense API
+
 export const createExpense = async (
   groupId: string, 
   payerId: string, 
@@ -58,7 +57,6 @@ export const createExpense = async (
   return response.data;
 };
 
-// Balance API
 export const getGroupBalances = async (
   groupId: string, 
   transitive: boolean = false

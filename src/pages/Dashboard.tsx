@@ -12,8 +12,6 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        // Since there's no direct endpoint for fetching all groups in your API,
-        // you might need to add this endpoint or handle groups differently
         const response = await axios.get('http://localhost:3000/api/groups');
         setGroups(response.data);
         setLoading(false);

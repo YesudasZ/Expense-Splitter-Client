@@ -28,8 +28,7 @@ const AddExpense = () => {
       try {
         const response = await axios.get(`http://localhost:3000/api/groups/${groupId}`);
         setGroup(response.data);
-        
-        // Pre-select all members for splitting
+
         if (response.data.members && Array.isArray(response.data.members)) {
           const memberIds = response.data.members.map((member: User) => 
             typeof member === 'string' ? member : member._id
@@ -50,7 +49,6 @@ const AddExpense = () => {
   const handleSplitMethodChange = (method: 'equal' | 'custom') => {
     setSplitMethod(method);
     
-    // Reset custom amounts when switching to equal split
     if (method === 'equal') {
       setCustomAmounts({});
     }
@@ -60,7 +58,6 @@ const AddExpense = () => {
     if (splitAmong.includes(memberId)) {
       setSplitAmong(splitAmong.filter(id => id !== memberId));
       
-      // Remove from custom amounts if using custom split
       if (splitMethod === 'custom') {
         const newCustomAmounts = { ...customAmounts };
         delete newCustomAmounts[memberId];

@@ -17,11 +17,10 @@ const CreateGroup = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // Note: You'll need to create an endpoint to fetch all users
         const response = await axios.get('http://localhost:3000/api/user');
         setUsers(response.data);
       } catch (err) {
-        console.error("Error fetching users:", err); // Log the error
+        console.error("Error fetching users:", err); 
         setError('Failed to fetch users');
       } finally {
         setFetchingUsers(false);

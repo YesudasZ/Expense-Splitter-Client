@@ -1,15 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getGroupBalances, Expense, Transaction, Group } from '../services/api';
-import axios from 'axios';
-import { FaMoneyBillWave, FaExchangeAlt, FaUserFriends, FaPlus } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { getGroupBalances, Expense, Transaction, Group } from "../services/api";
+import axios from "axios";
+import {
+  FaMoneyBillWave,
+  FaExchangeAlt,
+  FaUserFriends,
+  FaPlus,
+} from "react-icons/fa";
 
 const GroupDetails = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [balances, setBalances] = useState<Transaction[]>([]);
-  const [transitiveBalances, setTransitiveBalances] = useState<Transaction[]>([]);
+  const [transitiveBalances, setTransitiveBalances] = useState<Transaction[]>(
+    []
+  );
   const [showTransitiveBalances, setShowTransitiveBalances] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,27 +24,31 @@ const GroupDetails = () => {
   useEffect(() => {
     const fetchGroupDetails = async () => {
       if (!groupId) return;
-      
-      try {
 
-        const groupResponse = await axios.get(`http://localhost:3000/api/groups/${groupId}`);
+      try {
+        const groupResponse = await axios.get(
+          `http://localhost:3000/api/groups/${groupId}`
+        );
         setGroup(groupResponse.data);
-        
-     
-        const expensesResponse = await axios.get(`http://localhost:3000/api/expenses?groupId=${groupId}`);
+
+        const expensesResponse = await axios.get(
+          `http://localhost:3000/api/expenses?groupId=${groupId}`
+        );
         setExpenses(expensesResponse.data);
-        
-   
+
         const balancesResponse = await getGroupBalances(groupId, false);
         setBalances(balancesResponse);
-        
-        const transitiveBalancesResponse = await getGroupBalances(groupId, true);
+
+        const transitiveBalancesResponse = await getGroupBalances(
+          groupId,
+          true
+        );
         setTransitiveBalances(transitiveBalancesResponse);
-        
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching users:", err);
-        setError('Failed to fetch group details');
+        setError("Failed to fetch group details");
         setLoading(false);
       }
     };
@@ -46,10 +57,13 @@ const GroupDetails = () => {
   }, [groupId]);
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (error) return <div className="text-center py-10 text-red-600">{error}</div>;
+  if (error)
+    return <div className="text-center py-10 text-red-600">{error}</div>;
   if (!group) return <div className="text-center py-10">Group not found</div>;
 
-  const currentBalances = showTransitiveBalances ? transitiveBalances : balances;
+  const currentBalances = showTransitiveBalances
+    ? transitiveBalances
+    : balances;
 
   return (
     <div>
@@ -69,12 +83,11 @@ const GroupDetails = () => {
         </p>
       </div>
 
-      {/* Expenses Section */}
       <div className="bg-white rounded-lg shadow-md mb-6 p-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <FaMoneyBillWave className="mr-2 text-green-600" /> Expenses
         </h2>
-        
+
         {expenses.length === 0 ? (
           <p className="text-gray-500 italic">No expenses recorded yet</p>
         ) : (
@@ -103,7 +116,9 @@ const GroupDetails = () => {
                       {new Date(expense.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {typeof expense.payerId === 'object' ? expense.payerId.name : 'Unknown'}
+                      {typeof expense.payerId === "object"
+                        ? expense.payerId.name
+                        : "Unknown"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
                       ${expense.amount.toFixed(2)}
@@ -121,7 +136,6 @@ const GroupDetails = () => {
         )}
       </div>
 
-      {/* Balances Section */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold flex items-center">
@@ -132,11 +146,13 @@ const GroupDetails = () => {
               onClick={() => setShowTransitiveBalances(!showTransitiveBalances)}
               className={`px-3 py-1 rounded-md ${
                 showTransitiveBalances
-                  ? 'bg-indigo-100 text-indigo-800'
-                  : 'bg-gray-100 text-gray-800'
+                  ? "bg-indigo-100 text-indigo-800"
+                  : "bg-gray-100 text-gray-800"
               }`}
             >
-              {showTransitiveBalances ? 'Simplified Balances' : 'Regular Balances'}
+              {showTransitiveBalances
+                ? "Simplified Balances"
+                : "Regular Balances"}
             </button>
           </div>
         </div>
@@ -146,13 +162,22 @@ const GroupDetails = () => {
         ) : (
           <div className="space-y-4">
             {currentBalances.map((transaction, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-50 p-4 rounded-md">
+              <div
+                key={index}
+                className="flex items-center justify-between bg-gray-50 p-4 rounded-md"
+              >
                 <div className="flex items-center">
-                  <span className="font-medium text-gray-800">{transaction.fromName}</span>
+                  <span className="font-medium text-gray-800">
+                    {transaction.fromName}
+                  </span>
                   <span className="mx-2 text-gray-400">→</span>
-                  <span className="font-medium text-gray-800">{transaction.toName}</span>
+                  <span className="font-medium text-gray-800">
+                    {transaction.toName}
+                  </span>
                 </div>
-                <span className="font-semibold text-green-600">${transaction.amount.toFixed(2)}</span>
+                <span className="font-semibold text-green-600">
+                  ${transaction.amount.toFixed(2)}
+                </span>
               </div>
             ))}
           </div>
